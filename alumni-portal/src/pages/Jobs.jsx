@@ -37,8 +37,7 @@ const handlePostJob = async (e) => {
   try {
 
     // get logged in user token
-    const token = localStorage.getItem("token");
-
+  const token = localStorage.getItem("alumniToken");
     const response = await fetch(`${API_URL}/api/jobs`, {
       method: "POST",
       headers: {
