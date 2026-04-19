@@ -30,27 +30,51 @@ const Jobs = () => {
     setNewJob({ ...newJob, [e.target.name]: e.target.value });
   };
 
-  const handlePostJob = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const response = await fetch(`${API_URL}/api/jobs`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newJob)
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setJobs(prev => [data.job, ...prev]);
-        setIsFormOpen(false);
-        setNewJob({ jobTitle: '', companyName: '', jobType: 'Full-time', location: '', jobDescription: '', applyLink: '', postedBy: 'Alumni Network' });
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
+const handlePostJob = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  try {
+
+    // get logged in user token
+    const token = localStorage.getItem("token");
+
+    const response = await fetch(`${API_URL}/api/jobs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`   // IMPORTANT
+      },
+      body: JSON.stringify(newJob)
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to post job");
     }
-  };
+
+    const data = await response.json();
+
+    setJobs(prev => [data.job, ...prev]);
+
+    setIsFormOpen(false);
+
+    setNewJob({
+      jobTitle: "",
+      companyName: "",
+      jobType: "Full-time",
+      location: "",
+      jobDescription: "",
+      applyLink: "",
+      postedBy: "Alumni Network"
+    });
+
+  } catch (err) {
+    console.error(err);
+    alert("Job posting failed. Please login again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const userStr = localStorage.getItem('alumniUser');
   const user = userStr ? JSON.parse(userStr) : null;
