@@ -147,8 +147,8 @@ alumni-portal/
 
 ⚙️ Installation
 Clone repository
-git clone https://github.com/pardhu-naik/alumni-portal-ai.git
-cd alumni-portal-ai
+git clone https://github.com/muskan-512/Alumni-Management-System.git
+cd Alumni-Management-System
 
 Install frontend dependencies
 npm install

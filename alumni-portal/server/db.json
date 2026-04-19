@@ -2,8 +2,8 @@
   "donations": [
     {
       "id": 1774451667358,
-      "fullName": "pardhu",
-      "email": "pardhunaik2@gmail.com",
+      "fullName": "Alumni User",
+      "email": "alumni_user@example.com",
       "amount": "500",
       "purpose": "Student emergency fund",
       "message": "",
@@ -20,8 +20,8 @@
     },
     {
       "id": 1774764278001,
-      "fullName": "pardhu",
-      "email": "pardhu_naik@srmap.edu.in",
+      "fullName": "Alumni User",
+      "email": "alumni_user@srmap.edu.in",
       "amount": "5",
       "purpose": "Scholarship support",
       "message": "",
@@ -48,21 +48,21 @@
   "alumni": [
     {
       "id": 1774612357604,
-      "fullName": "Banavathu Pardhu Naik",
-      "email": "pardhu_naik@srmap.edu.in",
-      "password": "Pardhu@1205",
+      "fullName": "Alumni Member",
+      "email": "alumni_member@srmap.edu.in",
+      "password": "Alumni@123",
       "school": "SEAS",
       "department": "computer science and engineering",
       "batchYear": "2021",
       "companyName": "Microsoft",
       "jobTitle": "Software Engineer",
       "location": "Bangalore",
-      "linkedin": "https://www.linkedin.com/in/pardhu-naik-704b92342/",
-      "bio": "I am Pardhu NAik. Currently working in Microsoft as Software Engineer.",
+      "linkedin": "https://www.linkedin.com/in/alumni-member/",
+      "bio": "I am an enthusiastic Alumnus currently working as a Software Engineer.",
       "salary": 7500000,
       "profilePhotoUrl": "/uploads/1774612357592-pardhu.jpeg",
       "timestamp": "2026-03-27T11:52:37.604Z",
-      "phoneNumber": "9440810449"
+      "phoneNumber": "9000000000"
     },
     {
       "id": 1774724505000,
