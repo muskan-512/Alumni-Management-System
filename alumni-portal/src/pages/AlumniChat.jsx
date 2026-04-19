@@ -7,6 +7,7 @@ const AlumniChat = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const schoolFilter = params.get('school');
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   const getStoredUser = () => {
     try {
@@ -58,8 +59,8 @@ const AlumniChat = () => {
     setLoading(true);
     try {
       const url = schoolFilter 
-        ? `http://localhost:5000/api/alumni?school=${schoolFilter}`
-        : 'http://localhost:5000/api/alumni';
+        ? `${API_URL}/api/alumni?school=${schoolFilter}&role=all`
+        : `${API_URL}/api/alumni?role=all`;
       const response = await fetch(url);
       const data = await response.json();
       // Filter out current user from the list
@@ -74,7 +75,7 @@ const AlumniChat = () => {
   const fetchMessages = async (receiverId, isPoll = false) => {
     if (!currentUser?.id) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/messages?senderId=${currentUser.id}&receiverId=${receiverId}`);
+      const response = await fetch(`${API_URL}/api/messages?senderId=${currentUser.id}&receiverId=${receiverId}`);
       const data = await response.json();
       
       if (!Array.isArray(data)) {
@@ -108,7 +109,7 @@ const AlumniChat = () => {
 
     try {
       isSelfSending.current = true;
-      const response = await fetch('http://localhost:5000/api/messages', {
+      const response = await fetch(`${API_URL}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(messageData)
@@ -220,7 +221,7 @@ const AlumniChat = () => {
                   >
                     <div className="w-12 h-12 rounded-full overflow-hidden bg-theme-section border border-theme-border mr-4 shrink-0 transition-colors">
                       <img 
-                        src={alum.profile_image || alum.profilePhotoUrl ? `http://localhost:5000${alum.profile_image || alum.profilePhotoUrl}` : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop"} 
+                        src={alum.profile_image || alum.profilePhotoUrl ? `${API_URL}${alum.profile_image || alum.profilePhotoUrl}` : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop"} 
                         alt={alum.fullName} 
                         className="w-full h-full object-cover"
                       />
@@ -250,7 +251,7 @@ const AlumniChat = () => {
                   <div className="flex items-center">
                     <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-theme-border">
                        <img 
-                        src={selectedAlumnus.profile_image || selectedAlumnus.profilePhotoUrl ? `http://localhost:5000${selectedAlumnus.profile_image || selectedAlumnus.profilePhotoUrl}` : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop"} 
+                        src={selectedAlumnus.profile_image || selectedAlumnus.profilePhotoUrl ? `${API_URL}${selectedAlumnus.profile_image || selectedAlumnus.profilePhotoUrl}` : "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop"} 
                         alt={selectedAlumnus.fullName} 
                         className="w-full h-full object-cover"
                       />

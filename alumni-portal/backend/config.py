@@ -7,16 +7,25 @@ load_dotenv()
 
 
 class Config:
-    # MySQL Database
-    DB_HOST = os.getenv('DB_HOST', 'localhost')
-    DB_USER = os.getenv('DB_USER', 'root')
-    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
-    DB_NAME = os.getenv('DB_NAME', 'alumni_portal_db')
+    # Database
+    DATABASE_URL = os.getenv('DATABASE_URL')
+    
+    if DATABASE_URL:
+        # Standardize for SQLAlchemy if it's postgres://
+        if DATABASE_URL.startswith("postgres://"):
+            DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        SQLALCHEMY_DATABASE_URI = DATABASE_URL
+    else:
+        # MySQL Database Fallback
+        DB_HOST = os.getenv('DB_HOST', 'localhost')
+        DB_USER = os.getenv('DB_USER', 'root')
+        DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+        DB_NAME = os.getenv('DB_NAME', 'alumni_portal_db')
+        SQLALCHEMY_DATABASE_URI = (
+            f"mysql+pymysql://{DB_USER}:{quote_plus(DB_PASSWORD)}@{DB_HOST}/{DB_NAME}"
+            "?charset=utf8mb4"
+        )
 
-    SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{DB_USER}:{quote_plus(DB_PASSWORD)}@{DB_HOST}/{DB_NAME}"
-        "?charset=utf8mb4"
-    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # JWT

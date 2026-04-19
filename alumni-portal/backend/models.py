@@ -27,6 +27,7 @@ class Alumni(db.Model):
     salary = db.Column(db.Float, default=0)
     profile_image = db.Column(db.String(500))
     phoneNumber = db.Column(db.String(50))
+    role = db.Column(db.String(20), default='alumni', nullable=False)
     timestamp = db.Column(db.String(50))
 
     def to_dict(self, include_password=False):
@@ -46,6 +47,7 @@ class Alumni(db.Model):
             'profile_image': self.profile_image,
             'profilePhotoUrl': self.profile_image,   # alias for frontend compat
             'phoneNumber': self.phoneNumber,
+            'role': self.role,
             'timestamp': self.timestamp,
         }
         if include_password:

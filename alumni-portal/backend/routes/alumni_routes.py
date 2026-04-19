@@ -20,7 +20,8 @@ def allowed_file(filename):
 @alumni_bp.route('/api/alumni/top-achievers', methods=['GET'])
 def top_achievers():
     try:
-        all_alumni = Alumni.query.all()
+        # Only alumni can be top achievers
+        all_alumni = Alumni.query.filter(Alumni.role == 'alumni').all()
         schools = ['SEAS', 'ESLA', 'PSB']
         result = []
         for school in schools:
@@ -44,7 +45,8 @@ def top_achievers():
 @alumni_bp.route('/api/alumni/count-by-school', methods=['GET'])
 def count_by_school():
     try:
-        all_alumni = Alumni.query.all()
+        # Only count alumni for school statistics
+        all_alumni = Alumni.query.filter(Alumni.role == 'alumni').all()
         counts = {}
         for a in all_alumni:
             school = a.school.upper() if a.school else 'UNKNOWN'
@@ -62,7 +64,14 @@ def count_by_school():
 def get_alumni():
     try:
         school = request.args.get('school')
+        role_filter = request.args.get('role', 'alumni') # Default to alumni
+        
         query = Alumni.query
+        
+        # Apply role filter
+        if role_filter != 'all':
+            query = query.filter(Alumni.role == role_filter)
+            
         if school:
             query = query.filter(
                 db.func.upper(Alumni.school) == school.upper()
@@ -73,6 +82,26 @@ def get_alumni():
     except Exception as e:
         print(f'Fetch Error: {e}')
         return jsonify({'error': 'Internal server error while fetching alumni'}), 500
+
+
+# -------------------------------------------------------------------
+# GET /api/students
+# -------------------------------------------------------------------
+@alumni_bp.route('/api/students', methods=['GET'])
+def get_students():
+    try:
+        school = request.args.get('school')
+        query = Alumni.query.filter(Alumni.role == 'student')
+        if school:
+            query = query.filter(
+                db.func.upper(Alumni.school) == school.upper()
+            )
+        query = query.order_by(Alumni.timestamp.desc())
+        student_list = query.all()
+        return jsonify([a.to_dict() for a in student_list]), 200
+    except Exception as e:
+        print(f'Fetch Students Error: {e}')
+        return jsonify({'error': 'Internal server error while fetching students'}), 500
 
 
 # -------------------------------------------------------------------
@@ -94,6 +123,7 @@ def register_alumni():
         bio = request.form.get('bio')
         salary_raw = request.form.get('salary')
         salary = float(salary_raw) if salary_raw else 0
+        role = request.form.get('role', 'alumni')
 
         profile_image = None
         if 'profilePhoto' in request.files:
@@ -121,6 +151,7 @@ def register_alumni():
             bio=bio,
             salary=salary,
             profile_image=profile_image,
+            role=role,
             timestamp=datetime.now(timezone.utc).isoformat(),
         )
         db.session.add(new_alumni)

@@ -5,7 +5,8 @@ import { useState } from 'react';
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    role: 'alumni'
   });
 
   const handleChange = (e) => {
@@ -16,12 +17,14 @@ const Login = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch('http://localhost:5000/api/login', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
+          role: formData.role
         }),
       });
 
@@ -103,6 +106,34 @@ const Login = () => {
                   onChange={handleChange}
                 />
               </div>
+            </div>
+          </div>
+
+          <div className="py-2">
+            <label className="block text-sm font-bold text-theme-text mb-3 transition-colors">Login as:</label>
+            <div className="flex space-x-8">
+              <label className="flex items-center space-x-2 cursor-pointer group">
+                <input
+                  type="radio"
+                  name="role"
+                  value="student"
+                  checked={formData.role === 'student'}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-university-green focus:ring-university-gold border-theme-border rounded-full bg-theme-section cursor-pointer"
+                />
+                <span className={`text-sm font-bold transition-colors ${formData.role === 'student' ? 'text-university-green' : 'text-theme-muted group-hover:text-university-green'}`}>Student</span>
+              </label>
+              <label className="flex items-center space-x-2 cursor-pointer group">
+                <input
+                  type="radio"
+                  name="role"
+                  value="alumni"
+                  checked={formData.role === 'alumni'}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-university-green focus:ring-university-gold border-theme-border rounded-full bg-theme-section cursor-pointer"
+                />
+                <span className={`text-sm font-bold transition-colors ${formData.role === 'alumni' ? 'text-university-green' : 'text-theme-muted group-hover:text-university-green'}`}>Alumni</span>
+              </label>
             </div>
           </div>
 

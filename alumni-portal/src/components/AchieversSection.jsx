@@ -6,13 +6,15 @@ const AchieversSection = () => {
   const [achievers, setAchievers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
   useEffect(() => {
     fetchTopAchievers();
   }, []);
 
   const fetchTopAchievers = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/alumni/top-achievers');
+      const response = await fetch(`${API_URL}/api/alumni/top-achievers`);
       const data = await response.json();
       setAchievers(data);
     } catch (error) {
@@ -53,7 +55,7 @@ const AchieversSection = () => {
                 <div className="absolute top-12 w-full flex justify-center">
                   <div className="w-32 h-32 rounded-full border-4 border-theme-card overflow-hidden bg-theme-section shadow-md transition-colors">
                     <img 
-                      src={alum.profilePhotoUrl ? `http://localhost:5000${alum.profilePhotoUrl}` : `https://images.unsplash.com/photo-${1500000000000 + alum.id % 1000}?q=80&w=200&h=200&auto=format&fit=crop`} 
+                      src={alum.profilePhotoUrl ? `${API_URL}${alum.profilePhotoUrl}` : `https://images.unsplash.com/photo-${1500000000000 + alum.id % 1000}?q=80&w=200&h=200&auto=format&fit=crop`} 
                       alt={alum.fullName} 
                       className="w-full h-full object-cover"
                     />

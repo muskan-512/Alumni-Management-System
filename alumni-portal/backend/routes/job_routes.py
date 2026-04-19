@@ -1,11 +1,13 @@
 from datetime import datetime, timezone
 from flask import Blueprint, request, jsonify
 from models import db, Job
+from utils.auth_utils import role_required
 
 job_bp = Blueprint('jobs', __name__)
 
 
 @job_bp.route('/api/jobs', methods=['POST'])
+@role_required('alumni')
 def create_job():
     try:
         data = request.get_json()

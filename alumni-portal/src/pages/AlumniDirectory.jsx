@@ -7,6 +7,7 @@ const AlumniDirectory = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const [alumniData, setAlumniData] = useState([]);
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const [selectedAlumni, setSelectedAlumni] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -19,7 +20,7 @@ const AlumniDirectory = () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/alumni')
+    fetch(`${API_URL}/api/alumni`)
       .then(res => res.json())
       .then(data => {
         setAlumniData(data);
@@ -85,7 +86,7 @@ const AlumniDirectory = () => {
   const deleteAlumni = async (id) => {
     if (window.confirm('Are you sure you want to delete this alumni?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/alumni/${id}`, {
+        const response = await fetch(`${API_URL}/api/alumni/${id}`, {
           method: 'DELETE',
           headers: { ...getAuthHeaders() },
         });
@@ -101,7 +102,9 @@ const AlumniDirectory = () => {
     }
   };
 
-  const loggedInUser = JSON.parse(localStorage.getItem('alumniUser') || '{}');
+  const loggedInUserStr = localStorage.getItem('alumniUser');
+  const loggedInUser = loggedInUserStr ? JSON.parse(loggedInUserStr) : {};
+  const isAlumni = loggedInUser.role?.toLowerCase() === 'alumni';
 
   const handleEditClick = (alum) => {
     setEditFormData({
@@ -133,7 +136,7 @@ const AlumniDirectory = () => {
     });
 
     try {
-      const response = await fetch(`http://localhost:5000/api/alumni/${selectedAlumni.id}`, {
+      const response = await fetch(`${API_URL}/api/alumni/${selectedAlumni.id}`, {
         method: 'PUT',
         headers: { ...getAuthHeaders() },
         body: formData
@@ -142,7 +145,7 @@ const AlumniDirectory = () => {
       if (response.ok) {
         const result = await response.json();
         // Refresh data
-        const updatedData = await fetch('http://localhost:5000/api/alumni').then(res => res.json());
+        const updatedData = await fetch(`${API_URL}/api/alumni`).then(res => res.json());
         setAlumniData(updatedData);
         setSelectedAlumni(updatedData.find(a => String(a.id) === String(selectedAlumni.id)));
         setIsEditing(false);
@@ -180,7 +183,7 @@ const AlumniDirectory = () => {
     const imagePath = alum.profile_image || alum.profilePhoto || alum.profilePhotoUrl;
     if (!imagePath) return "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2000&auto=format&fit=crop";
     if (imagePath.startsWith('http')) return imagePath;
-    return `http://localhost:5000${imagePath}`;
+    return `${API_URL}${imagePath}`;
   };
 
   const formatSalary = (salary) => {
@@ -333,12 +336,14 @@ const AlumniDirectory = () => {
                         >
                           View Profile
                         </button>
-                        <button 
-                          onClick={() => deleteAlumni(alum.id)}
-                          className="px-3 py-1.5 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded text-sm font-medium transition-colors"
-                        >
-                          Delete
-                        </button>
+                        {isAlumni && (
+                          <button 
+                            onClick={() => deleteAlumni(alum.id)}
+                            className="px-3 py-1.5 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded text-sm font-medium transition-colors"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

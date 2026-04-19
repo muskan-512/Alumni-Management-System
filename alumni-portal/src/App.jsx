@@ -30,6 +30,7 @@ import Jobs from './pages/Jobs';
 import Events from './pages/Events';
 import AlumniChat from './pages/AlumniChat';
 import SchoolPortal from './pages/SchoolPortal';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -55,9 +56,27 @@ function App() {
           
           {/* Main Feature Routes */}
           <Route path="/events" element={<Events />} />
-          <Route path="/donate" element={<Donation />} />
+          <Route path="/post-event" element={
+            <ProtectedRoute requiredRole="alumni">
+              <Events />
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/donate" element={
+            <ProtectedRoute requiredRole="alumni">
+              <Donation />
+            </ProtectedRoute>
+          } />
+          
           <Route path="/contact" element={<Contact />} />
+          
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/add-job" element={
+            <ProtectedRoute requiredRole="alumni">
+              <Jobs />
+            </ProtectedRoute>
+          } />
+          
           <Route path="/alumni-chat" element={<AlumniChat />} />
           <Route path="/mentorship" element={<Placeholder title="Mentorship Program" />} />
 

@@ -15,9 +15,10 @@ def login():
 
     email = data.get('email', '').strip()
     password = data.get('password', '').strip()
+    role = data.get('role', '').strip().lower()
 
-    if not email or not password:
-        return jsonify({'error': 'Email and password are required'}), 400
+    if not email or not password or not role:
+        return jsonify({'error': 'Email, password, and role are required'}), 400
 
     alumni = Alumni.query.filter(
         db.func.lower(Alumni.email) == email.lower()
@@ -25,6 +26,9 @@ def login():
 
     if not alumni:
         return jsonify({'error': 'User not found'}), 404
+
+    if alumni.role.lower() != role:
+        return jsonify({'error': f'Access denied: You are not registered as {role}'}), 403
 
     if not check_password_hash(alumni.password, password):
         return jsonify({'error': 'Invalid password'}), 401

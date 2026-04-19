@@ -41,8 +41,10 @@ const Contact = () => {
     Object.keys(formData).forEach(key => data.append(key, formData[key]));
     if (selectedFile) data.append('attachment', selectedFile);
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
     try {
-      const response = await fetch('http://localhost:5000/api/contact-message', {
+      const response = await fetch(`${API_URL}/api/contact-message`, {
         method: 'POST',
         body: data
       });

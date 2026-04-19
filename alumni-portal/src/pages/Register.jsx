@@ -17,7 +17,8 @@ const Register = () => {
     linkedin: '',
     bio: '',
     profilePhoto: '',
-    salary: ''
+    salary: '',
+    role: 'alumni'
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -51,9 +52,11 @@ const Register = () => {
       }
     });
     if (selectedFile) data.append('profilePhoto', selectedFile);
+    data.append('role', formData.role);
 
     try {
-      const response = await fetch('http://localhost:5000/api/alumni', {
+      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${API_URL}/api/alumni`, {
         method: 'POST',
         body: data
       });
@@ -134,7 +137,7 @@ const Register = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Email Address</label>
-                      <input name="email" type="email" required value={formData.email} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="you@example.com" />
+                      <input name="email" type="email" required value={formData.email} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="Enter your email" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">LinkedIn Profile URL</label>
@@ -142,11 +145,11 @@ const Register = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Password</label>
-                      <input name="password" type="password" required value={formData.password} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="••••••••" />
+                      <input name="password" type="password" required value={formData.password} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="Enter password" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Confirm Password</label>
-                      <input name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="••••••••" />
+                      <input name="confirmPassword" type="password" required value={formData.confirmPassword} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="Confirm password" />
                     </div>
                   </div>
                 </div>
@@ -173,35 +176,44 @@ const Register = () => {
                   <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Batch Year</label>
                   <input name="batchYear" type="number" required value={formData.batchYear} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="2024" />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Register as</label>
+                  <select name="role" required value={formData.role} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2.5 px-3 focus:ring-university-gold focus:border-university-gold transition-colors font-bold">
+                    <option value="student">Student</option>
+                    <option value="alumni">Alumni</option>
+                  </select>
+                </div>
               </div>
             </div>
 
             {/* Professional Information Section */}
-            <div>
-              <h3 className="text-lg font-bold text-university-gold border-b border-theme-border pb-2 mb-4">Professional Details</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Company Name</label>
-                  <input name="companyName" type="text" required value={formData.companyName} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="e.g. Google, Microsoft" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Job Title</label>
-                  <input name="jobTitle" type="text" required value={formData.jobTitle} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="e.g. Software Engineer" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Current Location</label>
-                  <input name="location" type="text" required value={formData.location} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="e.g. Bangalore, London" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Current Salary (CTC)</label>
-                  <input name="salary" type="number" required value={formData.salary} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="Enter your current salary (CTC)" />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Short Bio</label>
-                  <textarea name="bio" rows="3" value={formData.bio} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="Tell us a bit about your professional journey..."></textarea>
+            {formData.role === 'alumni' && (
+              <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                <h3 className="text-lg font-bold text-university-gold border-b border-theme-border pb-2 mb-4">Professional Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Company Name</label>
+                    <input name="companyName" type="text" required={formData.role === 'alumni'} value={formData.companyName} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="e.g. Google, Microsoft" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Job Title</label>
+                    <input name="jobTitle" type="text" required={formData.role === 'alumni'} value={formData.jobTitle} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="e.g. Software Engineer" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Current Location</label>
+                    <input name="location" type="text" required={formData.role === 'alumni'} value={formData.location} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="e.g. Bangalore, London" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Current Salary (CTC)</label>
+                    <input name="salary" type="number" required={formData.role === 'alumni'} value={formData.salary} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="Enter your current salary (CTC)" />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-theme-text mb-1 transition-colors">Short Bio</label>
+                    <textarea name="bio" rows="3" value={formData.bio} onChange={handleChange} className="w-full text-sm border-theme-border bg-theme-section text-theme-text rounded-md border py-2 px-3 focus:ring-university-gold focus:border-university-gold transition-colors" placeholder="Tell us a bit about your professional journey..."></textarea>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="flex items-center justify-end pt-6 border-t border-theme-border">

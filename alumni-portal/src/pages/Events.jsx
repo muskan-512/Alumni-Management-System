@@ -7,6 +7,7 @@ const Events = () => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const schoolFilter = params.get('school');
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   
   const [events, setEvents] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -32,8 +33,8 @@ const Events = () => {
     setLoading(true);
     try {
       const url = schoolFilter 
-        ? `http://localhost:5000/api/events?school=${schoolFilter}`
-        : 'http://localhost:5000/api/events';
+        ? `${API_URL}/api/events?school=${schoolFilter}`
+        : `${API_URL}/api/events`;
       const response = await fetch(url);
       const data = await response.json();
       setEvents(data);
@@ -59,7 +60,7 @@ const Events = () => {
     if (selectedFile) data.append('eventImage', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:5000/api/events', {
+      const response = await fetch(`${API_URL}/api/events`, {
         method: 'POST',
         headers: { ...getAuthHeaders() },
         body: data
@@ -76,6 +77,10 @@ const Events = () => {
     }
   };
 
+  const userStr = localStorage.getItem('alumniUser');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isAlumni = user?.role?.toLowerCase() === 'alumni';
+
   return (
     <div className="py-16 bg-theme-bg min-h-screen transition-colors duration-300">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -88,13 +93,15 @@ const Events = () => {
               Stay connected and grow with our alumni community events.
             </p>
           </div>
-          <button 
-            onClick={() => setShowForm(!showForm)}
-            className="mt-6 md:mt-0 flex items-center space-x-2 bg-university-green text-white px-6 py-3 rounded-full hover:bg-university-olive transition-all shadow-lg hover:shadow-xl font-bold"
-          >
-            {showForm ? <X size={20} /> : <Plus size={20} />}
-            <span>{showForm ? 'Cancel' : 'Add Event'}</span>
-          </button>
+          {isAlumni && (
+            <button 
+              onClick={() => setShowForm(!showForm)}
+              className="mt-6 md:mt-0 flex items-center space-x-2 bg-university-green text-white px-6 py-3 rounded-full hover:bg-university-olive transition-all shadow-lg hover:shadow-xl font-bold"
+            >
+              {showForm ? <X size={20} /> : <Plus size={20} />}
+              <span>{showForm ? 'Cancel' : 'Add Event'}</span>
+            </button>
+          )}
         </div>
 
         {showForm && (
@@ -218,7 +225,7 @@ const Events = () => {
               <div key={event.id} className="premium-card bg-theme-card overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-theme-border group">
                 <div className="h-48 overflow-hidden relative">
                   <img 
-                    src={event.imageUrl ? `http://localhost:5000${event.imageUrl}` : "https://images.unsplash.com/photo-1540575861501-7ad060e39fe1?q=80&w=2070&auto=format&fit=crop"} 
+                    src={event.imageUrl ? `${API_URL}${event.imageUrl}` : "https://images.unsplash.com/photo-1540575861501-7ad060e39fe1?q=80&w=2070&auto=format&fit=crop"} 
                     alt={event.title} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
@@ -277,7 +284,7 @@ const Events = () => {
           <div className="bg-theme-card w-full max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in duration-200 flex flex-col">
             <div className="relative h-64 md:h-80 shrink-0">
               <img 
-                src={selectedEvent.imageUrl ? `http://localhost:5000${selectedEvent.imageUrl}` : "https://images.unsplash.com/photo-1540575861501-7ad060e39fe1?q=80&w=2070&auto=format&fit=crop"} 
+                src={selectedEvent.imageUrl ? `${API_URL}${selectedEvent.imageUrl}` : "https://images.unsplash.com/photo-1540575861501-7ad060e39fe1?q=80&w=2070&auto=format&fit=crop"} 
                 alt={selectedEvent.title} 
                 className="w-full h-full object-cover"
               />

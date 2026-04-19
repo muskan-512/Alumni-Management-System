@@ -3,6 +3,7 @@ import { Briefcase, MapPin, Building, Globe, Plus, X } from 'lucide-react';
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const [loading, setLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,7 +18,7 @@ const Jobs = () => {
   });
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/jobs')
+    fetch(`${API_URL}/api/jobs`)
       .then(res => res.json())
       .then(data => {
         setJobs(data);
@@ -33,7 +34,7 @@ const Jobs = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await fetch('http://localhost:5000/api/jobs', {
+      const response = await fetch(`${API_URL}/api/jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newJob)
@@ -51,6 +52,10 @@ const Jobs = () => {
     }
   };
 
+  const userStr = localStorage.getItem('alumniUser');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isAlumni = user?.role?.toLowerCase() === 'alumni';
+
   return (
     <div className="bg-theme-bg min-h-screen py-10 transition-colors duration-300">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -60,13 +65,15 @@ const Jobs = () => {
             <h1 className="text-4xl font-bold text-theme-text mb-2 transition-colors">Jobs & Placements</h1>
             <p className="text-theme-muted transition-colors">Exclusive opportunities posted by our alumni community.</p>
           </div>
-          <button 
-            onClick={() => setIsFormOpen(true)}
-            className="flex items-center space-x-2 bg-university-gold text-university-green font-bold px-6 py-3 rounded-md hover:bg-yellow-500 transition-colors shadow-lg"
-          >
-            <Plus size={20} />
-            <span>POST A JOB</span>
-          </button>
+          {isAlumni && (
+            <button 
+              onClick={() => setIsFormOpen(true)}
+              className="flex items-center space-x-2 bg-university-gold text-university-green font-bold px-6 py-3 rounded-md hover:bg-yellow-500 transition-colors shadow-lg"
+            >
+              <Plus size={20} />
+              <span>POST A JOB</span>
+            </button>
+          )}
         </div>
 
         {loading ? (

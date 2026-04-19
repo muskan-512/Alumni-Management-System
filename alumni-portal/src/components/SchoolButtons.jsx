@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 
 const SchoolButtons = () => {
   const [counts, setCounts] = useState({});
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     fetchCounts();
@@ -12,7 +13,7 @@ const SchoolButtons = () => {
 
   const fetchCounts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/alumni/count-by-school');
+      const response = await fetch(`${API_URL}/api/alumni/count-by-school`);
       const data = await response.json();
       setCounts(data);
     } catch (error) {

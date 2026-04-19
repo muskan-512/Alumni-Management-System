@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import jwt_required
 from werkzeug.utils import secure_filename
 from models import db, Event
+from utils.auth_utils import role_required
 
 event_bp = Blueprint('events', __name__)
 
@@ -21,7 +22,7 @@ def get_events():
 
 
 @event_bp.route('/api/events', methods=['POST'])
-@jwt_required()
+@role_required('alumni')
 def create_event():
     try:
         image_url = None

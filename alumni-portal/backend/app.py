@@ -24,7 +24,13 @@ def create_app():
 
     # Initialise extensions
     db.init_app(app)
-    CORS(app)
+    
+    # Configure CORS
+    allowed_origins = os.getenv('ALLOWED_ORIGINS', '*')
+    if allowed_origins != '*':
+        allowed_origins = allowed_origins.split(',')
+    CORS(app, origins=allowed_origins)
+    
     JWTManager(app)
 
     # Register all route blueprints
